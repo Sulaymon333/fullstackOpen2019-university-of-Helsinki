@@ -9,7 +9,7 @@ const App = ({ names }) => {
 
     const handleNameChange = e => {
         setNewName(e.target.value);
-        console.log(newName);
+        // console.log(newName);
     };
 
     const handleSubmit = e => {
@@ -18,7 +18,17 @@ const App = ({ names }) => {
             id: persons.length + 1,
             name: newName
         };
+
+        const checkPersonName = persons.find(person => person.name.toLowerCase() === newName.toLowerCase());
+        console.log(checkPersonName);
+
+        if (checkPersonName) {
+            alert(`${newName} is already added to phone book`);
+            setNewName('');
+            return;
+        }
         setPersons(persons.concat(newPersonObject));
+
         setNewName('');
     };
 
