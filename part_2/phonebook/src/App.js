@@ -4,13 +4,26 @@ const App = ({ names }) => {
     const [persons, setPersons] = useState(names);
     const [newName, setNewName] = useState('');
     const [newNumber, setNewNumber] = useState('');
+    const [filter, setFilter] = useState(false);
+    const [filteredList, setFilteredList] = useState([]);
 
     const Person = ({ name, number }) => (
         <p>
             {name} {number}
         </p>
     );
-    const personsList = persons.map(person => <Person key={person.id} name={person.name} number={person.number} />);
+    const personsList = filter
+        ? filteredList.map(person => <Person key={person.id} name={person.name} number={person.number} />)
+        : persons.map(person => <Person key={person.id} name={person.name} number={person.number} />);
+
+    const handleSearch = e => {
+        setFilter(true);
+        const filteredSearch = persons.filter(person =>
+            person.name.toLowerCase().includes(e.target.value.toLowerCase())
+        );
+        const filtered = e.target.value === '' ? persons : filteredSearch;
+        setFilteredList(filtered);
+    };
 
     const handleName = e => {
         setNewName(e.target.value);
@@ -22,6 +35,7 @@ const App = ({ names }) => {
     };
 
     const handleSubmit = e => {
+        setFilter(false);
         e.preventDefault();
         const newPersonObject = {
             id: persons.length + 1,
@@ -36,23 +50,31 @@ const App = ({ names }) => {
         // console.log(checkPersonObject);
 
         if (checkPersonObject) {
-            console.log(checkPersonObject.name.toLowerCase());
-            if (checkPersonObject.name.toLowerCase() === newName.toLowerCase())
+            if (checkPersonObject.name.toLowerCase() === newName.toLowerCase() && newName !== '')
                 alert(`${newName} is already added to phone book`);
-            if (checkPersonObject.number === newNumber) alert(`${newNumber} is already added to phone book`);
+            if (checkPersonObject.number === newNumber && newNumber !== '')
+                alert(`${newNumber} is already added to phone book`);
             setNewName('');
             setNewNumber('');
             return;
         }
-        setPersons(persons.concat(newPersonObject));
-
-        setNewName('');
-        setNewNumber('');
+        if (newName === '' && newNumber === '') {
+            alert('The name and number fields cannot be empty');
+        } else if (newName === '') {
+            alert('The name field cannot be empty');
+        } else if (newNumber === '') {
+            alert('The number field cannot be empty');
+        } else {
+            setPersons(persons.concat(newPersonObject));
+            setNewName('');
+            setNewNumber('');
+        }
     };
-
+    // console.log(persons);
     return (
         <div>
             <h2>Phone book</h2>
+            <input type="text" onChange={handleSearch} />
             <form onSubmit={handleSubmit}>
                 <div>
                     Name: <input value={newName} onChange={handleName} />
