@@ -3,4 +3,6 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const names = [{ id: 1, name: 'Suly Teejay' }, { id: 2, name: 'John Doe' }, { id: 3, name: 'Mango Papaya' }];
+
+ReactDOM.render(<App names={names} />, document.getElementById('root'));
