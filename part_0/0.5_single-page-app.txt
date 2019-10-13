@@ -1,0 +1,21 @@
+title visiting Single Page App (SPA version)
+
+
+note over Browser:
+user visits https://fullstack-exampleapp.
+herokuapp.com/new_note_spa  
+end note
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/new_note_spa
+Server-->Browser: Response 200 OK, spa HTML code
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.css
+Server->Browser: load main.css for styling
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/spa.js
+Server->Browser: load spa.js which requests a JSON note data
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/data.json
+
+Server->Browser:[{ content: "HTML is easy", date: "2019-05-23" }, ...]
+
+note over Browser:
+Browser re-render the page with an updated 
+data of new note using the event handler
+end note

@@ -1,0 +1,25 @@
+title New note sequence
+
+
+note over Browser:
+user input the new item and presses 'Send' 
+end note
+Browser->Server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note
+Server-->Browser: Response 302 found, then make a GET request for notes
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/notes
+Server->Browser: HTML-Code notes
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.css
+Server->Browser: load main.css for styling
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.js
+Server->Browser: load main.js which requests a JSON note data
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/data.json
+
+Server->Browser:[{ content: "HTML is easy", date: "2019-05-23" }, ...]
+
+note over Browser:
+Browser re-render the page with an updated 
+data of new note using the event handler
+end note
+
+
+

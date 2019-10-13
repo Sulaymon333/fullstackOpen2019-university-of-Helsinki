@@ -1,0 +1,24 @@
+title New note sequence SPA
+
+note over Browser:
+user input the new item and presses 'Send' 
+end note
+note over Browser:
+js code is executed
+- prevent default reload of form submit
+- create new note and add it to the notes array
+- re-render the page with updated list and send 
+the new list to the server
+end note
+Browser->Server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa
+Server-->Browser: Response 201 created, no further request made
+note over Server:
+A message "note created" is logged 
+end note
+
+
+
+
+
+
+
