@@ -17,7 +17,7 @@ function App() {
         const flgAlt = `${name} flag`;
         const langData = languages.map((language, i) => <li key={i}>{language.name}</li>);
         if (filteredResult.length === 1) {
-            console.log(languages);
+            // console.log(languages);
             return (
                 <div>
                     <h1>{name}</h1>
@@ -29,9 +29,20 @@ function App() {
                 </div>
             );
         } else {
-            return <p>{name}</p>;
+            return (
+                <p>
+                    {name} <button onClick={handleShowCountryData}>Show</button>
+                </p>
+            );
         }
     };
+    const handleShowCountryData = e => {
+        const countryName = e.target.parentNode.innerText.toLowerCase().slice(0, -5);
+        const filtered = countries.filter(country => country.name.toLowerCase() === countryName);
+        console.log(filtered);
+        setFilteredResult(filtered);
+    };
+
     const filteredCountries = filter
         ? filteredResult.map((country, i) => (
               <Country
@@ -53,6 +64,7 @@ function App() {
         const filtered = countries.filter(country => country.name.toLowerCase().includes(e.target.value.toLowerCase()));
         setFilteredResult(filtered);
     };
+
     const output =
         filteredCountries.length > 10
             ? searchText === ''
@@ -65,7 +77,7 @@ function App() {
             <h1>Countries info search engine</h1>
             <div>
                 find countries:
-                <input type="text" value={searchText} onChange={handleSearch} />
+                <input type="search" value={searchText} onChange={handleSearch} placeholder="search countries ..." />
             </div>
             <div>{output}</div>
         </div>
