@@ -1,32 +1,91 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 function App() {
     const [countries, setCountries] = useState([]);
-    const [searchText, setSearchText] = useState('');
+    const [weatherData, setWeatherData] = useState([]);
+    const [searchText, setSearchText] = useState("");
     const [filter, setFilter] = useState(false);
+    const [currentCapital, setCurrentCapital] = useState(null);
     const [filteredResult, setFilteredResult] = useState([]);
 
     useEffect(() => {
-        axios.get('https://restcountries.eu/rest/v2/all').then(response => {
+        axios.get("https://restcountries.eu/rest/v2/all").then(response => {
             // console.log(response.data);
             setCountries(response.data);
         });
     }, []);
+
+    useEffect(() => {
+        if (currentCapital) {
+            // console.log(currentCapital);
+            axios
+                .get(
+                    `http://api.weatherstack.com/current?access_Key=${process.env.REACT_APP_API_KEY}&query=${currentCapital}`
+                )
+                .then(response => {
+                    console.log(response.data);
+                    setWeatherData(response.data);
+                });
+        }
+    }, [currentCapital]);
+    function formatNumber(num) {
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+    }
+
+    const WeatherInfo = ({ capital, temperature, weatherDescription, weatherIcon, windSpeed, windDir }) => {
+        return (
+            <div>
+                <h2>Weather in {capital}, right Now!</h2>
+                <div>
+                    <h3 style={{ display: "inline-block" }}>Temperature:</h3> <span>{temperature}° Celsius</span>
+                </div>
+                <div>
+                    <h3 style={{ display: "inline-block" }}>Weather description:</h3>
+                    <span> {weatherDescription}</span>
+                </div>
+                <img src={weatherIcon} alt='' />
+                <div>
+                    <h3 style={{ display: "inline-block" }}>Wind:</h3>{" "}
+                    <span>
+                        {windSpeed} kph direction {windDir}
+                    </span>
+                </div>
+            </div>
+        );
+    };
+
     const Country = ({ name, capital, population, languages, flag }) => {
         const flgAlt = `${name} flag`;
         const langData = languages.map((language, i) => <li key={i}>{language.name}</li>);
+        const weatherDetails = weatherData.current;
+
         if (filteredResult.length === 1) {
+            setCurrentCapital(capital);
+            // console.log(currentCapital);
             // console.log(languages);
+            // console.log(weatherDetails ? weatherDetails : '');
+
             return (
-                <div>
-                    <h1>{name}</h1>
-                    <p>Capital: {capital}</p>
-                    <p>Population: {population}</p>
-                    <h3>Languages</h3>
-                    <ul>{langData}</ul>
-                    <img style={{ width: '10rem' }} src={flag} alt={flgAlt} />
-                </div>
+                <React.Fragment>
+                    <div>
+                        <h1>{name}</h1>
+                        <p>Capital: {capital}</p>
+                        <p>Population: {formatNumber(population)}</p>
+                        <h3>Languages</h3>
+                        <ul>{langData}</ul>
+                        <img style={{ width: "10rem" }} src={flag} alt={flgAlt} />
+                    </div>
+
+                    <WeatherInfo
+                        capital={currentCapital}
+                        temperature={weatherDetails ? weatherDetails.temperature : ""}
+                        weatherIcon={weatherDetails ? weatherDetails.weather_icons[0] : ""}
+                        weatherDescription={weatherDetails ? weatherDetails.weather_descriptions[0] : ""}
+                        windSpeed={weatherDetails ? weatherDetails.wind_speed : ""}
+                        windDir={weatherDetails ? weatherDetails.wind_dir : ""}
+                    />
+                </React.Fragment>
             );
         } else {
             return (
@@ -54,7 +113,7 @@ function App() {
                   flag={country.flag}
               />
           ))
-        : '';
+        : "";
 
     // console.log(filteredCountries);
 
@@ -67,17 +126,17 @@ function App() {
 
     const output =
         filteredCountries.length > 10
-            ? searchText === ''
-                ? ''
-                : 'Too many matches, please specify another filter'
+            ? searchText === ""
+                ? ""
+                : "Too many matches, please specify another filter"
             : filteredCountries;
 
     return (
-        <div className="App">
+        <div className='App'>
             <h1>Countries info search engine</h1>
             <div>
-                find countries:
-                <input type="search" value={searchText} onChange={handleSearch} placeholder="search countries ..." />
+                find countries:{" "}
+                <input type='search' value={searchText} onChange={handleSearch} placeholder='search countries ...' />
             </div>
             <div>{output}</div>
         </div>
