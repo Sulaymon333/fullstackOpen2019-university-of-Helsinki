@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+require("dotenv").config();
 
 function App() {
     const [countries, setCountries] = useState([]);
